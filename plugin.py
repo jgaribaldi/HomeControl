@@ -1,0 +1,127 @@
+import pprint
+from typing import Any, Dict, Union
+
+import DomoticzEx as Domoticz  # type: ignore
+
+"""
+<plugin key="wiz_control_plugin" name="Wiz Control Plugin" author="Juli" version="1.0.0">
+    <params>
+        <param field="Mode1" label="Network Subnet" width="200px" required="true" default="192.168.1.0/24"/>
+        <param field="Mode2" label="Update Interval (seconds)" width="100px" required="true" default="10"/>
+        <param field="Mode6" label="Debug" width="75px">
+            <options>
+                <option label="True" value="Debug"/>
+                <option label="False" value="Normal" default="true"/>
+            </options>
+        </param>
+    </params>
+</plugin>
+"""
+
+
+class WizControlPlugin:
+    def __init__(self) -> None:
+        pass
+
+    def onStart(self) -> None:
+        Domoticz.Debugging("WizControlPlugin :: onStart()")
+        pass
+
+    def onStop(self) -> None:
+        Domoticz.Debugging("WizControlPlugin :: onStop()")
+        pass
+
+    def onConnect(self, connection: Any, status: int, description: str) -> None:
+        Domoticz.Debugging(
+            f"WizControlPlugin :: onConnect() : status={status} description={description}"
+        )
+        pass
+
+    def onDisconnect(self, connection: Any) -> None:
+        Domoticz.Debugging("WizControlPlugin :: onDisconnect()")
+        pass
+
+    def onMessage(self, connection: Any, data: Union[Dict[str, Any], bytes]) -> None:
+        Domoticz.Debugging(
+            f"WizControlPlugin :: onMessage() : data={pprint.pprint(data)}"
+        )
+        pass
+
+    def onCommand(
+        self, device_id: str, unit: int, command: str, level: int, color: str
+    ) -> None:
+        Domoticz.Debugging(
+            f"WizControlPlugin :: onCommand() : device_id={device_id} unit={unit} command={command} level={level} color={color}"
+        )
+        pass
+
+    def onHeartbeat(self) -> None:
+        Domoticz.Debugging("WizControlPlugin :: onHeartbeat()")
+        pass
+
+    def onNotification(
+        self,
+        name: str,
+        subject: str,
+        text: str,
+        status: str,
+        priority: int,
+        sound: str,
+        image_file: str,
+    ) -> None:
+        Domoticz.Debugging(
+            f"WizControlPlugin :: onNotification() : name={name} subject={subject} text={text} status={status} priority={priority} sound={sound} image_file={image_file}"
+        )
+        pass
+
+
+global _plugin
+_plugin = WizControlPlugin()
+
+
+def onStart():
+    global _plugin
+    _plugin.onStart()
+
+
+def onStop():
+    global _plugin
+    _plugin.onStop()
+
+
+def onConnect(connection: Any, status: int, description: str):
+    global _plugin
+    _plugin.onConnect(connection, status, description)
+
+
+def onDisconnect(connection: Any):
+    global _plugin
+    _plugin.onDisconnect(connection)
+
+
+def onMessage(connection: Any, data: Union[Dict[str, Any], bytes]):
+    global _plugin
+    _plugin.onMessage(connection, data)
+
+
+def onCommand(device_id: str, unit: int, command: str, level: int, color: str):
+    global _plugin
+    _plugin.onCommand(device_id, unit, command, level, color)
+
+
+def onHeartbeat():
+    global _plugin
+    _plugin.onHeartbeat()
+
+
+def onNotification(
+    name: str,
+    subject: str,
+    text: str,
+    status: str,
+    priority: int,
+    sound: str,
+    image_file: str,
+):
+    global _plugin
+    _plugin.onNotification(name, subject, text, status, priority, sound, image_file)
