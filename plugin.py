@@ -64,19 +64,21 @@ class WizControlPlugin:
 
     def onHeartbeat(self) -> None:
         Domoticz.Debugging("WizControlPlugin :: onHeartbeat()")
+        broadcast_ip = self._get_broadcast_ip()
 
+        try:
+            self._execute_bulb_discovery(broadcast_ip)
+        except Exception as e:
+            Domoticz.Error(f"Discovery failed: {e}")
+
+    def _get_broadcast_ip(self) -> str:
         # Get network subnet from plugin parameters
         subnet = Domoticz.Parameters()["Mode1"]
         if not subnet:
             subnet = "192.168.1.0/24"
 
         # Convert subnet to broadcast address (simple implementation)
-        broadcast_ip = subnet.replace("/24", ".255")
-
-        try:
-            self._execute_bulb_discovery(broadcast_ip)
-        except Exception as e:
-            Domoticz.Error(f"Discovery failed: {e}")
+        return subnet.replace("/24", ".255")
 
     def _execute_bulb_discovery(self, broadcast_ip: str) -> None:
         bulbs = asyncio.run(discovery.discover_lights(broadcast_space=broadcast_ip))
