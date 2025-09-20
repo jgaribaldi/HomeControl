@@ -23,7 +23,9 @@ from pywizlight import discovery, wizlight
 
 class WizControlPlugin:
     def __init__(self) -> None:
-        self.discovered_bulbs: Dict[str, wizlight] = {}  # Store discovered bulbs by MAC address
+        self.discovered_bulbs: Dict[str, wizlight] = (
+            {}
+        )  # Store discovered bulbs by MAC address
 
     def onStart(self) -> None:
         Domoticz.Debugging("WizControlPlugin :: onStart()")
@@ -62,31 +64,30 @@ class WizControlPlugin:
 
     def onHeartbeat(self) -> None:
         Domoticz.Debugging("WizControlPlugin :: onHeartbeat()")
-        
+
         # Get network subnet from plugin parameters
         subnet = Domoticz.Parameters()["Mode1"]
         if not subnet:
             subnet = "192.168.1.0/24"
-        
+
         # Convert subnet to broadcast address (simple implementation)
         broadcast_ip = subnet.replace("/24", ".255")
-        
+
         try:
-            # Run async discovery synchronously
-            bulbs = asyncio.run(discovery.discover_lights(broadcast_space=broadcast_ip))
-            
-            Domoticz.Log(f"Discovered {len(bulbs)} Wiz bulbs")
-            
-            # Process discovered bulbs
-            for bulb in bulbs:
-                mac_address = bulb.mac
-                if mac_address:
-                    self.discovered_bulbs[mac_address] = bulb
-                    Domoticz.Log(f"Found bulb: {bulb.ip} (MAC: {mac_address})")
-                    # TODO: Create/update Domoticz device for this bulb
-                    
+            self._execute_bulb_discovery(broadcast_ip)
         except Exception as e:
             Domoticz.Error(f"Discovery failed: {e}")
+
+    def _execute_bulb_discovery(self, broadcast_ip: str) -> None:
+        bulbs = asyncio.run(discovery.discover_lights(broadcast_space=broadcast_ip))
+        Domoticz.Log(f"Discovered {len(bulbs)} Wiz bulbs")
+
+        # Process discovered bulbs
+        for bulb in bulbs:
+            mac_address = bulb.mac
+            if mac_address:
+                self.discovered_bulbs[mac_address] = bulb
+                Domoticz.Log(f"Found bulb: {bulb.ip} (MAC: {mac_address})")
 
     def onNotification(
         self,
