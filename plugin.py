@@ -25,6 +25,7 @@ class WizControlPlugin:
 
     def onStart(self) -> None:
         Domoticz.Debugging("WizControlPlugin :: onStart()")
+        # TODO: configure discovery mechanism for Wiz bulbs (UDP broadcast)
         pass
 
     def onStop(self) -> None:
@@ -45,6 +46,7 @@ class WizControlPlugin:
         Domoticz.Debugging(
             f"WizControlPlugin :: onMessage() : data={pprint.pprint(data)}"
         )
+        # TODO: process hardware response message and create new devices (device is discovered)
         pass
 
     def onCommand(
@@ -53,10 +55,12 @@ class WizControlPlugin:
         Domoticz.Debugging(
             f"WizControlPlugin :: onCommand() : device_id={device_id} unit={unit} command={command} level={level} color={color}"
         )
+        # TODO: send commands to hardware
         pass
 
     def onHeartbeat(self) -> None:
         Domoticz.Debugging("WizControlPlugin :: onHeartbeat()")
+        # TODO: run hardware discovery process (UDP broadcast)
         pass
 
     def onNotification(
