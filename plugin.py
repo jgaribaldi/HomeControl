@@ -1,7 +1,9 @@
+import asyncio
 import pprint
 from typing import Any, Dict, Union
 
 import DomoticzEx as Domoticz  # type: ignore
+from pywizlight import discovery, wizlight
 
 """
 <plugin key="wiz_control_plugin" name="Wiz Control Plugin" author="Juli" version="1.0.0">
@@ -21,7 +23,7 @@ import DomoticzEx as Domoticz  # type: ignore
 
 class WizControlPlugin:
     def __init__(self) -> None:
-        pass
+        self.discovered_bulbs: Dict[str, wizlight] = {}  # Store discovered bulbs by MAC address
 
     def onStart(self) -> None:
         Domoticz.Debugging("WizControlPlugin :: onStart()")
@@ -60,8 +62,31 @@ class WizControlPlugin:
 
     def onHeartbeat(self) -> None:
         Domoticz.Debugging("WizControlPlugin :: onHeartbeat()")
-        # TODO: run hardware discovery process (UDP broadcast)
-        pass
+        
+        # Get network subnet from plugin parameters
+        subnet = Domoticz.Parameters()["Mode1"]
+        if not subnet:
+            subnet = "192.168.1.0/24"
+        
+        # Convert subnet to broadcast address (simple implementation)
+        broadcast_ip = subnet.replace("/24", ".255")
+        
+        try:
+            # Run async discovery synchronously
+            bulbs = asyncio.run(discovery.discover_lights(broadcast_space=broadcast_ip))
+            
+            Domoticz.Log(f"Discovered {len(bulbs)} Wiz bulbs")
+            
+            # Process discovered bulbs
+            for bulb in bulbs:
+                mac_address = bulb.mac
+                if mac_address:
+                    self.discovered_bulbs[mac_address] = bulb
+                    Domoticz.Log(f"Found bulb: {bulb.ip} (MAC: {mac_address})")
+                    # TODO: Create/update Domoticz device for this bulb
+                    
+        except Exception as e:
+            Domoticz.Error(f"Discovery failed: {e}")
 
     def onNotification(
         self,
