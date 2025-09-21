@@ -5,8 +5,11 @@ from typing import Any, Dict, Union
 import DomoticzEx as Domoticz  # type: ignore
 from pywizlight import discovery, wizlight
 
+# Domoticz framework globals (injected at runtime)
+Parameters: Dict[str, str]
+
 """
-<plugin key="wiz_control_plugin" name="Wiz Control Plugin" author="Juli" version="1.0.0">
+<plugin key="wiz_control_plugin" name="HomeControl" author="Juli" version="1.0.0">
     <params>
         <param field="Mode1" label="Network Subnet" width="200px" required="true" default="192.168.1.0/24"/>
         <param field="Mode2" label="Update Interval (seconds)" width="100px" required="true" default="10"/>
@@ -72,9 +75,13 @@ class WizControlPlugin:
             Domoticz.Error(f"Discovery failed: {e}")
 
     def _get_broadcast_ip(self) -> str:
-        # Get network subnet from plugin parameters
-        subnet = Domoticz.Parameters()["Mode1"]
-        if not subnet:
+        # Get network subnet from plugin parameters with fallback
+        try:
+            subnet = Parameters["Mode1"]
+            if not subnet:
+                subnet = "192.168.1.0/24"
+        except (NameError, KeyError):
+            # Fallback when Parameters is not available (testing/development)
             subnet = "192.168.1.0/24"
 
         # Convert subnet to broadcast address (simple implementation)
