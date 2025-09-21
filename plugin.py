@@ -9,7 +9,7 @@ from pywizlight import discovery, wizlight
 Parameters: Dict[str, str]
 
 """
-<plugin key="wiz_control_plugin" name="HomeControl" author="Juli" version="1.0.0">
+<plugin key="wiz_control_plugin" name="Wiz Control Plugin" author="Juli" version="1.0.0">
     <params>
         <param field="Mode1" label="Network Subnet" width="200px" required="true" default="192.168.1.0/24"/>
         <param field="Mode2" label="Update Interval (seconds)" width="100px" required="true" default="10"/>
