@@ -62,7 +62,7 @@ class WizControlPlugin:
         pass
 
     def onHeartbeat(self) -> None:
-        Domoticz.Log("onHeartbeat()")
+        Domoticz.Debug("onHeartbeat()")
         broadcast_ip = self._get_broadcast_ip()
 
         try:
