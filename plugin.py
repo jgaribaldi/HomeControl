@@ -31,42 +31,38 @@ class WizControlPlugin:
         )  # Store discovered bulbs by MAC address
 
     def onStart(self) -> None:
-        Domoticz.Debugging("WizControlPlugin :: onStart()")
+        Domoticz.Log("onStart()")
         # TODO: configure discovery mechanism for Wiz bulbs (UDP broadcast)
         pass
 
     def onStop(self) -> None:
-        Domoticz.Debugging("WizControlPlugin :: onStop()")
+        Domoticz.Log("onStop()")
         pass
 
     def onConnect(self, connection: Any, status: int, description: str) -> None:
-        Domoticz.Debugging(
-            f"WizControlPlugin :: onConnect() : status={status} description={description}"
-        )
+        Domoticz.Log(f"onConnect() : status={status} description={description}")
         pass
 
     def onDisconnect(self, connection: Any) -> None:
-        Domoticz.Debugging("WizControlPlugin :: onDisconnect()")
+        Domoticz.Log("onDisconnect()")
         pass
 
     def onMessage(self, connection: Any, data: Union[Dict[str, Any], bytes]) -> None:
-        Domoticz.Debugging(
-            f"WizControlPlugin :: onMessage() : data={pprint.pprint(data)}"
-        )
+        Domoticz.Log(f"onMessage() : data={pprint.pprint(data)}")
         # TODO: process hardware response message and create new devices (device is discovered)
         pass
 
     def onCommand(
         self, device_id: str, unit: int, command: str, level: int, color: str
     ) -> None:
-        Domoticz.Debugging(
-            f"WizControlPlugin :: onCommand() : device_id={device_id} unit={unit} command={command} level={level} color={color}"
+        Domoticz.Log(
+            f"onCommand() : device_id={device_id} unit={unit} command={command} level={level} color={color}"
         )
         # TODO: send commands to hardware
         pass
 
     def onHeartbeat(self) -> None:
-        Domoticz.Debugging("WizControlPlugin :: onHeartbeat()")
+        Domoticz.Log("onHeartbeat()")
         broadcast_ip = self._get_broadcast_ip()
 
         try:
@@ -108,8 +104,8 @@ class WizControlPlugin:
         sound: str,
         image_file: str,
     ) -> None:
-        Domoticz.Debugging(
-            f"WizControlPlugin :: onNotification() : name={name} subject={subject} text={text} status={status} priority={priority} sound={sound} image_file={image_file}"
+        Domoticz.Log(
+            f"onNotification() : name={name} subject={subject} text={text} status={status} priority={priority} sound={sound} image_file={image_file}"
         )
         pass
 
